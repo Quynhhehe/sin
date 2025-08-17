@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thiệp Sinh Nhật 🎂</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="countdown">3</div>
+  <div id="greeting">🎉 Chúc Mừng Sinh Nhật 🎂</div>
+  
+  <div class="card" id="card">
+    <div class="card-inner">
+      <div class="card-front">🎁 Bấm vào đây nè 🎉</div>
+      <div class="card-back">
+        <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWgwZjJvd2xyZjc1MHZ3bDB3and4OXM3eTBvYmtsa3Qza3N6NXhtciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SJsflFD5WDKzVJpcqZ/giphy.gif" alt="Happy Birthday">
+        <p>🎂 Chúc bạn sinh nhật thật vui vẻ, nhiều niềm vui, may mắn và hạnh phúc! 🥳💖</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nhạc MP3 -->
+  <audio id="bg-music" loop>
+    <source src="Happy Birthday Remix 2020 - Bản Nhạc Của HeineKen Đang Được Sử Dụng Nhiều Trên Tik.mp3">
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    const cdEl = document.getElementById("countdown");
+    const greeting = document.getElementById("greeting");
+    const card = document.getElementById("card");
+    const music = document.getElementById("bg-music");
+
+    // Countdown
+    let countdown = 3;
+    const interval = setInterval(() => {
+      countdown--;
+      if (countdown > 0) {
+        cdEl.textContent = countdown;
+      } else {
+        clearInterval(interval);
+        cdEl.style.display = "none";
+
+        // Phát nhạc
+        music.play().catch(()=>{console.log("Autoplay bị chặn, sẽ phát khi user click")});
+
+        // Hiện chữ chúc mừng
+        greeting.style.display = "block";
+
+        // Confetti bắn trong 2s
+        let duration = 2 * 1000;
+        let end = Date.now() + duration;
+        (function frame() {
+          confetti({ particleCount: 5, spread: 120 });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        })();
+
+        // Sau 3s thì hiện thiệp
+        setTimeout(() => {
+          greeting.style.display = "none";
+          card.style.display = "block";
+        }, 3000);
+      }
+    }, 1000);
+
+    // Click mở thiệp
+    card.addEventListener("click", () => {
+      card.classList.toggle("open");
+      if (card.classList.contains("open")) {
+        // Tim bay
+        setInterval(() => {
+          const heart = document.createElement("div");
+          heart.classList.add("heart");
+          heart.innerHTML = "❤️";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.top = "100vh";
+          heart.style.fontSize = Math.random() * 20 + 20 + "px";
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), 5000);
+        }, 500);
+
+        // Mưa chữ Happy Birthday
+        setInterval(() => {
+          const drop = document.createElement("div");
+          drop.classList.add("rain-text");
+          drop.textContent = "🎉 Happy Birthday 🎉";
+          drop.style.left = Math.random() * 100 + "vw";
+          drop.style.animationDuration = (3 + Math.random() * 3) + "s";
+          document.body.appendChild(drop);
+          setTimeout(() => drop.remove(), 6000);
+        }, 400);
+
+        // Bóng bay
+        setInterval(() => {
+          const balloon = document.createElement("div");
+          balloon.classList.add("balloon");
+          balloon.textContent = ["🎈","🎉","🎊","✨"][Math.floor(Math.random()*4)];
+          balloon.style.left = Math.random() * 100 + "vw";
+          balloon.style.fontSize = (30 + Math.random()*20) + "px";
+          balloon.style.animationDuration = (5 + Math.random() * 5) + "s";
+          document.body.appendChild(balloon);
+          setTimeout(() => balloon.remove(), 10000);
+        }, 800);
+
+        // Nếu nhạc chưa chạy do chặn -> phát khi user click
+        if (music.paused) music.play();
+      }
+    });
+  </script>
+</body>
+</html>
